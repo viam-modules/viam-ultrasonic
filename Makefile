@@ -19,11 +19,6 @@ module.tar.gz: build
 	rm -f $(BIN_OUTPUT_PATH)/module.tar.gz
 	tar czf $(BIN_OUTPUT_PATH)/module.tar.gz $(BIN_OUTPUT_PATH)/ultrasonic-module
 
-setup:
-	if [ "$(UNAME_S)" = "Linux" ]; then \
-		sudo apt install -y libjpeg-dev pkg-config; \
-	fi
-
 clean:
 	rm -rf $(BIN_OUTPUT_PATH)/ultrasonic-module $(BIN_OUTPUT_PATH)/module.tar.gz ultrasonic-module
 
