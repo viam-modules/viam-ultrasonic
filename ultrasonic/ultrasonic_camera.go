@@ -24,29 +24,18 @@ func init() {
 		camera.API,
 		ModelCamera,
 		resource.Registration[camera.Camera, *Config]{
-			Constructor: func(
-				ctx context.Context,
-				deps resource.Dependencies,
-				conf resource.Config,
-				logger logging.Logger,
-			) (camera.Camera, error) {
-				newConf, err := resource.NativeConfig[*Config](conf)
-				if err != nil {
-					return nil, err
-				}
-				return newCamera(ctx, deps, conf.ResourceName(), newConf, logger)
-			},
+			Constructor: newCamera,
 		})
 }
 
-func newCamera(ctx context.Context, deps resource.Dependencies, name resource.Name,
-	newConf *Config, logger logging.Logger,
+func newCamera(ctx context.Context, deps resource.Dependencies, conf resource.Config,
+	logger logging.Logger,
 ) (camera.Camera, error) {
-	usSensor, err := NewSensor(ctx, deps, name, newConf, logger)
+	usSensor, err := newSensor(ctx, deps, conf, logger)
 	if err != nil {
 		return nil, err
 	}
-	return cameraFromSensor(ctx, name, usSensor, logger)
+	return cameraFromSensor(ctx, conf.ResourceName(), usSensor, logger)
 }
 
 func cameraFromSensor(ctx context.Context, name resource.Name, usSensor sensor.Sensor, logger logging.Logger) (camera.Camera, error) {

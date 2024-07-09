@@ -49,47 +49,44 @@ func init() {
 		sensor.API,
 		ModelSensor,
 		resource.Registration[sensor.Sensor, *Config]{
-			Constructor: func(
-				ctx context.Context,
-				deps resource.Dependencies,
-				conf resource.Config,
-				logger logging.Logger,
-			) (sensor.Sensor, error) {
-				newConf, err := resource.NativeConfig[*Config](conf)
-				if err != nil {
-					return nil, err
-				}
-				return NewSensor(ctx, deps, conf.ResourceName(), newConf, logger)
-			},
+			Constructor: newSensor,
 		})
 }
 
 // NewSensor creates and configures a new ultrasonic sensor.
-func NewSensor(ctx context.Context, deps resource.Dependencies,
-	name resource.Name, config *Config, logger logging.Logger,
+func newSensor(
+	ctx context.Context,
+	deps resource.Dependencies,
+	conf resource.Config,
+	logger logging.Logger,
 ) (sensor.Sensor, error) {
+	nativeConf, err := resource.NativeConfig[*Config](conf)
+	if err != nil {
+		return nil, err
+	}
+
 	s := &Sensor{
-		Named:  name.AsNamed(),
+		Named:  conf.ResourceName().AsNamed(),
 		logger: logger,
-		config: config,
+		config: nativeConf,
 	}
 	cancelCtx, cancelFunc := context.WithCancel(context.Background())
 	s.cancelCtx = cancelCtx
 	s.cancelFunc = cancelFunc
 
-	res, ok := deps[board.Named(config.Board)]
+	res, ok := deps[board.Named(nativeConf.Board)]
 	if !ok {
-		return nil, errors.Errorf("ultrasonic: board %q missing from dependencies", config.Board)
+		return nil, errors.Errorf("ultrasonic: board %q missing from dependencies", nativeConf.Board)
 	}
 
 	b, ok := res.(board.Board)
 	if !ok {
-		return nil, errors.Errorf("ultrasonic: cannot find board %q", config.Board)
+		return nil, errors.Errorf("ultrasonic: cannot find board %q", nativeConf.Board)
 	}
 	s.board = b
 
-	if config.TimeoutMs > 0 {
-		s.timeoutMs = config.TimeoutMs
+	if nativeConf.TimeoutMs > 0 {
+		s.timeoutMs = nativeConf.TimeoutMs
 	} else {
 		// default to 1 sec
 		s.timeoutMs = 1000
@@ -98,9 +95,9 @@ func NewSensor(ctx context.Context, deps resource.Dependencies,
 	s.ticksChan = make(chan board.Tick, 2)
 
 	// Set the trigger pin to low, so it's ready for later.
-	triggerPin, err := b.GPIOPinByName(config.TriggerPin)
+	triggerPin, err := b.GPIOPinByName(nativeConf.TriggerPin)
 	if err != nil {
-		return nil, errors.Wrapf(err, "ultrasonic: cannot grab gpio %q", config.TriggerPin)
+		return nil, errors.Wrapf(err, "ultrasonic: cannot grab gpio %q", nativeConf.TriggerPin)
 	}
 	if err := triggerPin.Set(ctx, false, nil); err != nil {
 		return nil, errors.Wrap(err, "ultrasonic: cannot set trigger pin to low")
