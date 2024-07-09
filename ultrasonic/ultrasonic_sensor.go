@@ -74,28 +74,20 @@ func newSensor(
 	s.cancelCtx = cancelCtx
 	s.cancelFunc = cancelFunc
 
-	res, ok := deps[board.Named(nativeConf.Board)]
-	if !ok {
-		return nil, errors.Errorf("ultrasonic: board %q missing from dependencies", nativeConf.Board)
-	}
-
-	b, ok := res.(board.Board)
-	if !ok {
+	s.board, err = board.FromDependencies(deps, nativeConf.Board)
+	if err != nil {
 		return nil, errors.Errorf("ultrasonic: cannot find board %q", nativeConf.Board)
 	}
-	s.board = b
 
+	s.timeoutMs = 1000 // default to 1 sec
 	if nativeConf.TimeoutMs > 0 {
 		s.timeoutMs = nativeConf.TimeoutMs
-	} else {
-		// default to 1 sec
-		s.timeoutMs = 1000
 	}
 
 	s.ticksChan = make(chan board.Tick, 2)
 
 	// Set the trigger pin to low, so it's ready for later.
-	triggerPin, err := b.GPIOPinByName(nativeConf.TriggerPin)
+	triggerPin, err := s.board.GPIOPinByName(nativeConf.TriggerPin)
 	if err != nil {
 		return nil, errors.Wrapf(err, "ultrasonic: cannot grab gpio %q", nativeConf.TriggerPin)
 	}
