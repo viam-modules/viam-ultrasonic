@@ -6,6 +6,7 @@ import (
 
 	"viamultrasonic/ultrasonic"
 
+	"go.viam.com/rdk/components/camera"
 	"go.viam.com/rdk/components/sensor"
 	"go.viam.com/rdk/logging"
 	"go.viam.com/rdk/module"
@@ -13,18 +14,26 @@ import (
 )
 
 func main() {
-	utils.ContextualMain(mainWithArgs, logging.NewLogger("ultrasonic"))
+	utils.ContextualMain(mainWithArgs, logging.NewLogger("ultrasonic-module"))
 }
 
 func mainWithArgs(ctx context.Context, args []string, logger logging.Logger) error {
 	module, err := module.NewModuleFromArgs(ctx, logger)
-
 	if err != nil {
 		return err
 	}
-	module.AddModelFromRegistry(ctx, sensor.API, ultrasonic.Model)
+
+	err = module.AddModelFromRegistry(ctx, sensor.API, ultrasonic.ModelSensor)
+	if err != nil {
+		return err
+	}
+	err = module.AddModelFromRegistry(ctx, camera.API, ultrasonic.ModelCamera)
+	if err != nil {
+		return err
+	}
 
 	err = module.Start(ctx)
+	logger.Info("starting ultrasonic-module")
 	defer module.Close(ctx)
 	if err != nil {
 		return err
