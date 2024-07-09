@@ -1,4 +1,3 @@
-
 SOURCE_OS ?= $(shell uname -s | tr '[:upper:]' '[:lower:]')
 SOURCE_ARCH ?= $(shell uname -m)
 TARGET_OS ?= $(SOURCE_OS)
@@ -7,9 +6,14 @@ BIN_OUTPUT_PATH = bin/$(TARGET_OS)-$(TARGET_ARCH)
 TOOL_BIN = bin/gotools/$(shell uname -s)-$(shell uname -m)
 UNAME_S ?= $(shell uname -s)
 
+ifeq ($(TARGET_OS),linux)
+	CGO_ENABLED = 1
+	CGO_LDFLAGS := -l:libjpeg.a
+endif
+
 build:
 	rm -f $(BIN_OUTPUT_PATH)/ultrasonic-module
-	go build $(LDFLAGS) -o $(BIN_OUTPUT_PATH)/ultrasonic-module main.go
+	CGO_ENABLED=$(CGO_ENABLED) CGO_LDFLAGS="$(CGO_LDFLAGS)" go build -o $(BIN_OUTPUT_PATH)/ultrasonic-module main.go
 
 module.tar.gz: build
 	rm -f $(BIN_OUTPUT_PATH)/module.tar.gz
