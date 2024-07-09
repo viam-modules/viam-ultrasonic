@@ -18,7 +18,7 @@ import (
 	rdkutils "go.viam.com/utils"
 )
 
-var Model = resource.NewModel("viam", "sensor", "ultrasonic")
+var ModelSensor = resource.NewModel("viam", "ultrasonic", "sensor")
 
 // Config is used for converting config attributes.
 type Config struct {
@@ -47,7 +47,7 @@ func (conf *Config) Validate(path string) ([]string, error) {
 func init() {
 	resource.RegisterComponent(
 		sensor.API,
-		Model,
+		ModelSensor,
 		resource.Registration[sensor.Sensor, *Config]{
 			Constructor: func(
 				ctx context.Context,

@@ -13,7 +13,7 @@ import (
 	"go.viam.com/rdk/resource"
 )
 
-var model = resource.DefaultModelFamily.WithModel("ultrasonic")
+var ModelCamera = resource.NewModel("viam", "ultrasonic", "camera")
 
 type ultrasonicWrapper struct {
 	usSensor sensor.Sensor
@@ -22,7 +22,7 @@ type ultrasonicWrapper struct {
 func init() {
 	resource.RegisterComponent(
 		camera.API,
-		model,
+		ModelCamera,
 		resource.Registration[camera.Camera, *Config]{
 			Constructor: func(
 				ctx context.Context,
