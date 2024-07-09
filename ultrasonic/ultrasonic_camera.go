@@ -16,7 +16,8 @@ import (
 var ModelCamera = resource.NewModel("viam", "ultrasonic", "camera")
 
 type ultrasonicWrapper struct {
-	usSensor sensor.Sensor
+	// The underlying ultrasonic sensor that is wrapped into a camera
+	s sensor.Sensor
 }
 
 func init() {
@@ -28,31 +29,31 @@ func init() {
 		})
 }
 
-func newCamera(ctx context.Context, deps resource.Dependencies, conf resource.Config,
+func newCamera(
+	ctx context.Context,
+	deps resource.Dependencies,
+	conf resource.Config,
 	logger logging.Logger,
 ) (camera.Camera, error) {
-	usSensor, err := newSensor(ctx, deps, conf, logger)
+	s, err := newSensor(ctx, deps, conf, logger)
 	if err != nil {
 		return nil, err
 	}
-	return cameraFromSensor(ctx, conf.ResourceName(), usSensor, logger)
-}
 
-func cameraFromSensor(ctx context.Context, name resource.Name, usSensor sensor.Sensor, logger logging.Logger) (camera.Camera, error) {
-	usWrapper := ultrasonicWrapper{usSensor: usSensor}
+	usWrapper := ultrasonicWrapper{s: s}
 
 	usVideoSource, err := camera.NewVideoSourceFromReader(ctx, &usWrapper, nil, camera.UnspecifiedStream)
 	if err != nil {
 		return nil, err
 	}
 
-	return camera.FromVideoSource(name, usVideoSource, logger), nil
+	return camera.FromVideoSource(conf.ResourceName(), usVideoSource, logger), nil
 }
 
 // NextPointCloud queries the ultrasonic sensor then returns the result as a pointcloud,
 // with a single point at (0, 0, distance).
-func (usvs *ultrasonicWrapper) NextPointCloud(ctx context.Context) (pointcloud.PointCloud, error) {
-	readings, err := usvs.usSensor.Readings(ctx, nil)
+func (cam *ultrasonicWrapper) NextPointCloud(ctx context.Context) (pointcloud.PointCloud, error) {
+	readings, err := cam.s.Readings(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -72,17 +73,17 @@ func (usvs *ultrasonicWrapper) NextPointCloud(ctx context.Context) (pointcloud.P
 }
 
 // Properties returns the properties of the ultrasonic camera.
-func (usvs *ultrasonicWrapper) Properties(ctx context.Context) (camera.Properties, error) {
+func (cam *ultrasonicWrapper) Properties(ctx context.Context) (camera.Properties, error) {
 	return camera.Properties{SupportsPCD: true, ImageType: camera.UnspecifiedStream}, nil
 }
 
 // Close closes the underlying ultrasonic sensor and the camera itself.
-func (usvs *ultrasonicWrapper) Close(ctx context.Context) error {
-	err := usvs.usSensor.Close(ctx)
+func (cam *ultrasonicWrapper) Close(ctx context.Context) error {
+	err := cam.s.Close(ctx)
 	return err
 }
 
 // Read returns a not yet implemented error, as it is not needed for the ultrasonic camera.
-func (usvs *ultrasonicWrapper) Read(ctx context.Context) (image.Image, func(), error) {
+func (cam *ultrasonicWrapper) Read(ctx context.Context) (image.Image, func(), error) {
 	return nil, nil, errors.New("not yet implemented")
 }

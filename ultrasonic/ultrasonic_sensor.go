@@ -65,7 +65,7 @@ func newSensor(
 		return nil, err
 	}
 
-	s := &Sensor{
+	s := &usSensor{
 		Named:  conf.ResourceName().AsNamed(),
 		logger: logger,
 		config: nativeConf,
@@ -108,8 +108,8 @@ func newSensor(
 	return s, nil
 }
 
-// Sensor ultrasonic sensor.
-type Sensor struct {
+// usSensor ultrasonic sensor.
+type usSensor struct {
 	resource.Named
 	resource.AlwaysRebuild
 	mu         sync.Mutex
@@ -123,14 +123,14 @@ type Sensor struct {
 	f          *os.File
 }
 
-func (s *Sensor) namedError(err error) error {
+func (s *usSensor) namedError(err error) error {
 	return errors.Wrapf(
 		err, "Error in ultrasonic sensor with name %s: ", s.Name(),
 	)
 }
 
 // Readings returns the calculated distance.
-func (s *Sensor) Readings(ctx context.Context, extra map[string]interface{}) (map[string]interface{}, error) {
+func (s *usSensor) Readings(ctx context.Context, extra map[string]interface{}) (map[string]interface{}, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -190,7 +190,7 @@ func (s *Sensor) Readings(ctx context.Context, extra map[string]interface{}) (ma
 }
 
 // Close remove interrupt callback of ultrasonic sensor.
-func (s *Sensor) Close(ctx context.Context) error {
+func (s *usSensor) Close(ctx context.Context) error {
 	fmt.Println("closing modular ultrasonic sensor")
 	s.cancelFunc()
 	return nil
