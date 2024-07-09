@@ -3,13 +3,12 @@ package ultrasonic
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"math"
 	"os"
 	"sync"
 	"time"
-
-	"github.com/pkg/errors"
 
 	"go.viam.com/rdk/components/board"
 	"go.viam.com/rdk/components/sensor"
@@ -76,7 +75,7 @@ func newSensor(
 
 	s.board, err = board.FromDependencies(deps, nativeConf.Board)
 	if err != nil {
-		return nil, errors.Errorf("ultrasonic: cannot find board %q", nativeConf.Board)
+		return nil, fmt.Errorf("ultrasonic: cannot find board %q", nativeConf.Board)
 	}
 
 	s.timeoutMs = 1000 // default to 1 sec
@@ -89,10 +88,10 @@ func newSensor(
 	// Set the trigger pin to low, so it's ready for later.
 	triggerPin, err := s.board.GPIOPinByName(nativeConf.TriggerPin)
 	if err != nil {
-		return nil, errors.Wrapf(err, "ultrasonic: cannot grab gpio %q", nativeConf.TriggerPin)
+		return nil, fmt.Errorf("%w. ultrasonic: cannot grab gpio %q", err, nativeConf.TriggerPin)
 	}
 	if err := triggerPin.Set(ctx, false, nil); err != nil {
-		return nil, errors.Wrap(err, "ultrasonic: cannot set trigger pin to low")
+		return nil, fmt.Errorf("%w. ultrasonic: cannot set trigger pin to low", err)
 	}
 
 	s.f, _ = os.Create("/tmp/ultrasonicdata.txt")
@@ -116,8 +115,8 @@ type usSensor struct {
 }
 
 func (s *usSensor) namedError(err error) error {
-	return errors.Wrapf(
-		err, "Error in ultrasonic sensor with name %s: ", s.Name(),
+	return fmt.Errorf(
+		"%w. Error in ultrasonic sensor with name %s: ", err, s.Name(),
 	)
 }
 
@@ -130,11 +129,11 @@ func (s *usSensor) Readings(ctx context.Context, extra map[string]interface{}) (
 	// reconfigures itself because someone decided to rewire things.
 	echoInterrupt, err := s.board.DigitalInterruptByName(s.config.EchoInterrupt)
 	if err != nil {
-		return nil, errors.Errorf("ultrasonic: cannot grab digital interrupt %q", s.config.EchoInterrupt)
+		return nil, fmt.Errorf("ultrasonic: cannot grab digital interrupt %q", s.config.EchoInterrupt)
 	}
 	triggerPin, err := s.board.GPIOPinByName(s.config.TriggerPin)
 	if err != nil {
-		return nil, errors.Wrapf(err, "ultrasonic: cannot grab gpio %q", s.config.TriggerPin)
+		return nil, fmt.Errorf("%w. ultrasonic: cannot grab gpio %q", err, s.config.TriggerPin)
 	}
 
 	s.board.StreamTicks(ctx, []board.DigitalInterrupt{echoInterrupt}, s.ticksChan, nil)
@@ -143,11 +142,11 @@ func (s *usSensor) Readings(ctx context.Context, extra map[string]interface{}) (
 	// we send a high and a low to the trigger pin 10 microseconds
 	// apart to signal the sensor to begin sending the sonic pulse
 	if err := triggerPin.Set(ctx, true, nil); err != nil {
-		return nil, s.namedError(errors.Wrap(err, "ultrasonic cannot set trigger pin to high"))
+		return nil, s.namedError(fmt.Errorf("%w. ultrasonic cannot set trigger pin to high", err))
 	}
 	rdkutils.SelectContextOrWait(ctx, time.Microsecond*10)
 	if err := triggerPin.Set(ctx, false, nil); err != nil {
-		return nil, s.namedError(errors.Wrap(err, "ultrasonic cannot set trigger pin to low"))
+		return nil, s.namedError(fmt.Errorf("%w. ultrasonic cannot set trigger pin to low", err))
 	}
 
 	// the first signal from the interrupt indicates that the sonic
@@ -168,7 +167,7 @@ func (s *usSensor) Readings(ctx context.Context, extra map[string]interface{}) (
 		case <-s.cancelCtx.Done():
 			return nil, s.namedError(errors.New("ultrasonic: context canceled"))
 		case <-time.After(time.Millisecond * time.Duration(s.timeoutMs)):
-			return nil, s.namedError(errors.Errorf("timed out waiting for signal that %s", signalStr))
+			return nil, s.namedError(fmt.Errorf("timed out waiting for signal that %s", signalStr))
 		}
 	}
 	timeB := ticks[0].TimestampNanosec
