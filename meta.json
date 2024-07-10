@@ -2,7 +2,7 @@
   "module_id": "viam:ultrasonic",
   "visibility": "public",
   "url": "https://github.com/viam-modules/viam-ultrasonic",
-  "description": "Go module for ultrasonic sensor and camera",
+  "description": "Viam Go module for ultrasonic sensor and camera",
   "models": [
     {
       "api": "rdk:component:sensor",
