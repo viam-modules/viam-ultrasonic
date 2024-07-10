@@ -1,4 +1,4 @@
-name: Build & publish ultrasonic to registry 
+name: Build & publish to registry 
 
 on:
   release:
