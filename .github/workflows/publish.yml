@@ -1,9 +1,6 @@
 name: Build & publish ultrasonic to registry 
 
 on:
-  pull_request:
-    branches:
-      - '*'
   release:
     types: [published]
 
