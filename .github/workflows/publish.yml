@@ -1,9 +1,9 @@
 name: Build & publish ultrasonic to registry 
 
 on:
-  push:
+  pull_request:
     branches:
-      - 'RSDK-8152'
+      - '*'
   release:
     types: [published]
 
