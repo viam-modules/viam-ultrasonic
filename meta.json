@@ -1,16 +1,16 @@
 {
-  "module_id": "seanorg:ultrasonic",
+  "module_id": "viam:ultrasonic",
   "visibility": "public",
-  "url": "https://github.com/hexbabe/sean-viam-ultrasonic",
+  "url": "https://github.com/viam-modules/viam-ultrasonic",
   "description": "Viam Go module for ultrasonic sensor and camera",
   "models": [
     {
       "api": "rdk:component:sensor",
-      "model": "seanorg:ultrasonic:sensor"
+      "model": "viam:ultrasonic:sensor"
     },
     {
       "api": "rdk:component:camera",
-      "model": "seanorg:ultrasonic:camera"
+      "model": "viam:ultrasonic:camera"
     }
   ],
   "build": {

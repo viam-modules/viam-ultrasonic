@@ -17,7 +17,7 @@ import (
 	rdkutils "go.viam.com/utils"
 )
 
-var ModelSensor = resource.NewModel("seanorg", "ultrasonic", "sensor")
+var ModelSensor = resource.NewModel("viam", "ultrasonic", "sensor")
 
 // Config is used for converting config attributes.
 type Config struct {
