@@ -5,7 +5,6 @@ go 1.22
 toolchain go1.22.3
 
 require (
-	github.com/pkg/errors v0.9.1
 	go.viam.com/rdk v0.31.0
 	go.viam.com/utils v0.1.83
 )
@@ -109,6 +108,7 @@ require (
 	github.com/pion/transport/v2 v2.2.5 // indirect
 	github.com/pion/turn/v2 v2.1.6 // indirect
 	github.com/pion/webrtc/v3 v3.2.43 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/rs/cors v1.11.0 // indirect

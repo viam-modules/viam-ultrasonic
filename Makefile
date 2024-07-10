@@ -17,6 +17,7 @@ build:
 	rm -f $(BIN_OUTPUT_PATH)/ultrasonic-module
 	CGO_ENABLED=$(CGO_ENABLED) CGO_LDFLAGS="$(CGO_LDFLAGS)" go build -o $(BIN_OUTPUT_PATH)/ultrasonic-module main.go
 
+# bin/ultrasonic-module is the expected entrypoint specified in meta.json
 module.tar.gz: build
 	cp $(BIN_OUTPUT_PATH)/ultrasonic-module bin/ultrasonic-module
 	tar czf module.tar.gz bin/ultrasonic-module

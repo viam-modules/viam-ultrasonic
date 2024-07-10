@@ -13,7 +13,7 @@ import (
 	"go.viam.com/rdk/resource"
 )
 
-var ModelCamera = resource.NewModel("viam", "ultrasonic", "camera")
+var ModelCamera = resource.NewModel("seanorg", "ultrasonic", "camera")
 
 type ultrasonicWrapper struct {
 	// The underlying ultrasonic sensor that is wrapped into a camera

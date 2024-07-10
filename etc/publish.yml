@@ -1,6 +1,9 @@
-name: Build & publish module to registry 
+name: Build & publish ultrasonic to registry 
 
 on:
+  push:
+    branches:
+      - 'RSDK-8152'
   release:
     types: [published]
 
