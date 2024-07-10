@@ -1,48 +1,23 @@
----
-title: "Configure an Ultrasonic Sensor"
-linkTitle: "ultrasonic"
-weight: 60
-type: "docs"
-description: "Configure an ultrasonic model sensor."
-tags: ["sensor", "components", "ultrasonic"]
-icon: true
-images: ["/icons/components/sensor.svg"]
-aliases:
-  - "/components/sensor/ultrasonic/"
-component_description: "The HC-S204 ultrasonic distance sensor."
-# SME: #team-bucket
----
+# `viam-ultrasonic`
 
-{{< alert title="Tip" color="tip" >}}
-An ultrasonic distance sensor can also be configured as a [camera](/components/camera/) resource.
+This module implements the [`"rdk:component:sensor"` API](https://docs.viam.com/components/sensor/) and [`"rdk:component:camera"` API](https://docs.viam.com/components/camera/) to integrate the HC-S204 ultrasonic distance sensor into your machine.
 
-When configured as a camera, you can use the camera method [`GetPointCloud()`](/components/camera/#getpointcloud), rather than the sensor method [`GetReadings()`](/components/sensor/#getreadings).
-Additionally, you can use the camera component as an input to a [vision service](/services/vision/) model that returns obstacles.
-{{< /alert >}}
+Two models are provided:
+* `viam:ultrasonic:sensor` - Configure as a sensor to access the sensor method GetReadings().
+* `viam:ultrasonic:camera` - When configured as a camera, you can use the camera method GetPointCloud(), rather than GetReadings().
 
-Configure an `ultrasonic` sensor to integrate the [HC-S204](https://www.sparkfun.com/products/15569) ultrasonic distance sensor into your machine:
+## Configure your ultrasonic component
 
-{{< tabs >}}
-{{% tab name="Config Builder" %}}
+Navigate to the **CONFIGURE** tab of your machine's page in [the Viam app](https://app.viam.com), searching for `ultrasonic` and selecting one of the above models.
 
-Navigate to the **CONFIGURE** tab of your machine's page in [the Viam app](https://app.viam.com).
-Click the **+** icon next to your machine part in the left-hand menu and select **Component**.
-Select the `sensor` type, then select the `ultrasonic` model.
-Enter a name or use the suggested name for your sensor and click **Create**.
+Fill in the attributes as applicable to your sensor, according to the example below.
 
-![Creation of a ultrasonic sensor in the Viam app config builder.](/components/sensor/ultrasonic-sensor-ui-config.png)
-
-Fill in the attributes as applicable to your sensor, according to the table below.
-
-{{% /tab %}}
-{{% tab name="JSON Template" %}}
-
-```json {class="line-numbers linkable-line-numbers"}
+```json
 {
   "components": [
     {
-      "name": "<your-ultrasonic-sensor-name>",
-      "model": "ultrasonic",
+      "name": "<ultrasonic-sensor-name>",
+      "model": "viam:ultrasonic:sensor",
       "type": "sensor",
       "namespace": "rdk",
       "attributes": {
@@ -57,22 +32,20 @@ Fill in the attributes as applicable to your sensor, according to the table belo
 }
 ```
 
-{{% /tab %}}
-{{% tab name="JSON Example" %}}
-
-```json {class="line-numbers linkable-line-numbers"}
+Similarly for the ultrasonic camera:
+```json
 {
   "components": [
     {
-      "name": "my-ultrasonic-sensor",
-      "model": "ultrasonic",
-      "type": "sensor",
+      "name": "<ultrasonic-camera-name>",
+      "model": "viam:ultrasonic:camera",
+      "type": "camera",
       "namespace": "rdk",
       "attributes": {
-        "trigger_pin": "5",
-        "echo_interrupt_pin": "15",
-        "board": "local",
-        "timeout_ms": "1200"
+        "trigger_pin": "<pin-number>",
+        "echo_interrupt_pin": "<pin-number>",
+        "board": "<your-board-name>",
+        "timeout_ms": <int>
       },
       "depends_on": []
     }
@@ -80,13 +53,12 @@ Fill in the attributes as applicable to your sensor, according to the table belo
 }
 ```
 
-{{% /tab %}}
-{{% /tabs %}}
-
 The following attributes are available for `ultrasonic` sensors:
 
-{{< readfile "/static/include/components/ultrasonic-attributes.md" >}}
-
-## Test the sensor
-
-{{< readfile "/static/include/components/test-control/sensor-control.md" >}}
+<!-- prettier-ignore -->
+| Attribute | Type | Required? | Description |
+| --------- | ---- | --------- | ----------- |
+| `trigger_pin` | string | **Required** | The pin number of the [board's](https://docs.viam.com/components/board/) GPIO pin that you have wired [the ultrasonic's trigger pin](https://www.sparkfun.com/products/15569) to. |
+| `echo_interrupt_pin` | string | **Required** | The pin number of the pin [the ultrasonic's echo pin](https://www.sparkfun.com/products/15569) is wired to on the board. If you have already created a [digital interrupt](https://docs.viam.com/components/board/#digital_interrupts) for this pin in the [board's configuration](https://docs.viam.com/components/board/), use that digital interrupt's `name` instead. |
+| `board`  | string | **Required** | The `name` of the [board](https://docs.viam.com/components/board/) the ultrasonic is wired to. |
+| `timeout_ms`  | int | Optional | Time to wait in milliseconds before timing out of requesting to get ultrasonic distance readings. <br> Default: `1000`. |
