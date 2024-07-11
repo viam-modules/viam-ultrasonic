@@ -90,7 +90,7 @@ func TestSensorLifecycle(t *testing.T) {
 	logger := logging.NewTestLogger(t)
 
 	// Test newSensor
-	goRoutinesStart := runtime.NumGoroutine()  // used to track start vs. ending num goroutines
+	goRoutinesStart := runtime.NumGoroutine() // used to track start vs. ending num goroutines
 	s, err := newSensor(context.Background(), deps, conf, logger)
 	test.That(t, err, test.ShouldBeNil)
 	test.That(t, s, test.ShouldNotBeNil)
