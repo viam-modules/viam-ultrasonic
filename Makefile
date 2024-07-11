@@ -11,7 +11,7 @@ ifeq ($(TARGET_OS),linux)
 	CGO_LDFLAGS := -l:libjpeg.a
 endif
 
-.PHONY: build clean gofmt lint update-rdk
+.PHONY: build clean gofmt lint update-rdk test
 
 build:
 	rm -f $(BIN_OUTPUT_PATH)/ultrasonic-module
@@ -35,3 +35,6 @@ lint: gofmt
 update-rdk:
 	go get go.viam.com/rdk@latest
 	go mod tidy
+
+test:
+	go test ./...
