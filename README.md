@@ -1,6 +1,6 @@
 # `viam-ultrasonic`
 
-This module implements the [`"rdk:component:sensor"` API](https://docs.viam.com/components/sensor/) and [`"rdk:component:camera"` API](https://docs.viam.com/components/camera/) to integrate the HC-S204 ultrasonic distance sensor into your machine.
+This module implements the [`"rdk:component:sensor"` API](https://docs.viam.com/components/sensor/) and [`"rdk:component:camera"` API](https://docs.viam.com/components/camera/) to integrate the [HC-S204 ultrasonic distance sensor](https://www.sparkfun.com/products/15569) into your machine.
 
 Two models are provided:
 * `viam:ultrasonic:sensor` - Configure as a sensor to access the sensor method GetReadings().
@@ -53,7 +53,7 @@ Similarly for the ultrasonic camera:
 }
 ```
 
-The following attributes are available for `ultrasonic` sensors:
+The following attributes are available for the `ultrasonic` component:
 
 <!-- prettier-ignore -->
 | Attribute | Type | Required? | Description |
