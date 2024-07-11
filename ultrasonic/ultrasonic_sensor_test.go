@@ -2,6 +2,7 @@ package ultrasonic
 
 import (
 	"context"
+	"runtime"
 	"testing"
 	"time"
 
@@ -89,6 +90,7 @@ func TestSensorLifecycle(t *testing.T) {
 	logger := logging.NewTestLogger(t)
 
 	// Test newSensor
+	goRoutinesStart := runtime.NumGoroutine()  // used to track start vs. ending num goroutines
 	s, err := newSensor(context.Background(), deps, conf, logger)
 	test.That(t, err, test.ShouldBeNil)
 	test.That(t, s, test.ShouldNotBeNil)
@@ -102,4 +104,8 @@ func TestSensorLifecycle(t *testing.T) {
 
 	err = us.Close(ctx)
 	test.That(t, err, test.ShouldBeNil)
+
+	// Test goroutine leaks
+	goRoutinesEnd := runtime.NumGoroutine()
+	test.That(t, goRoutinesStart, test.ShouldEqual, goRoutinesEnd)
 }
