@@ -137,7 +137,7 @@ func (s *usSensor) Readings(ctx context.Context, extra map[string]interface{}) (
 	}
 
 	s.board.StreamTicks(ctx, []board.DigitalInterrupt{echoInterrupt}, s.ticksChan, nil)
-	fmt.Println("returning stream ticks")
+	s.logger.Debug("returning stream ticks")
 
 	// we send a high and a low to the trigger pin 10 microseconds
 	// apart to signal the sensor to begin sending the sonic pulse
