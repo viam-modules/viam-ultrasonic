@@ -6,11 +6,16 @@
   "models": [
     {
       "api": "rdk:component:sensor",
-      "model": "viam:ultrasonic:sensor"
+      "model": "viam:ultrasonic:sensor",
+      "markdown_link" : "README.md#configure-your-ultrasonic-sensor",
+      "short_description" : "driver to return readings from an ultrasonic sensor with trigger and echo pins"
+
     },
     {
       "api": "rdk:component:camera",
-      "model": "viam:ultrasonic:camera"
+      "model": "viam:ultrasonic:camera",
+      "markdown_link" : "README.md#configure-your-ultrasonic-camera",
+      "short_description" : "driver to return pointclouds with one dimension from an ultrasonic sensor with trigger and echo pins"
     }
   ],
   "build": {
