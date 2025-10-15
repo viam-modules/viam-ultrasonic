@@ -10,7 +10,7 @@ Navigate to the **CONFIGURE** tab of your machine's page in [the Viam app](https
 
 ## Prerequisites
 
-You must have a [board](https://docs.viam.com/components/board/) component configured to configure an ultrasonic sensor or an ultrasonic camera.
+You must have a [board](https://docs.viam.com/components/board/) component configured to use an ultrasonic sensor or an ultrasonic camera.
 The ultrasonic sensor or camera uses the board component to access and use the pins on the board.
 
 ## Configure your ultrasonic sensor
