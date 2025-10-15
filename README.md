@@ -8,6 +8,10 @@ Two models are provided:
 
 Navigate to the **CONFIGURE** tab of your machine's page in [the Viam app](https://app.viam.com), searching for `ultrasonic` and selecting one of the above models.
 
+## Prerequisites
+
+You must have a [board](https://docs.viam.com/components/board/) component configured to configure an ultrasonic sensor or an ultrasonic camera.
+The ultrasonic sensor or camera uses the board component to access and use the pins on the board.
 
 ## Configure your ultrasonic sensor
 Fill in the attributes as applicable to your sensor, according to the example below.
@@ -24,14 +28,16 @@ Fill in the attributes as applicable to your sensor, according to the example be
 
 | Attribute | Type | Required? | Description |
 | --------- | ---- | --------- | ----------- |
-| `trigger_pin` | string | **Required** | The pin number of the [board's](https://docs.viam.com/components/board/) GPIO pin that you have wired [the ultrasonic's trigger pin](https://www.sparkfun.com/products/15569) to. |
-| `echo_interrupt_pin` | string | **Required** | The pin number of the pin [the ultrasonic's echo pin](https://www.sparkfun.com/products/15569) is wired to on the board. If you have already created a [digital interrupt](https://docs.viam.com/components/board/#digital_interrupts) for this pin in the [board's configuration](https://docs.viam.com/components/board/), use that digital interrupt's `name` instead. |
-| `board`  | string | **Required** | The `name` of the [board](https://docs.viam.com/components/board/) the ultrasonic is wired to. |
+| `trigger_pin` | string | **Required** | The physical pin number of the [board's](https://docs.viam.com/components/board/) GPIO pin that you have wired [the ultrasonic's trigger pin](https://www.sparkfun.com/products/15569) to. |
+| `echo_interrupt_pin` | string | **Required** | The physical pin number of the pin [the ultrasonic's echo pin](https://www.sparkfun.com/products/15569) is wired to on the board. If you have already created a [digital interrupt](https://docs.viam.com/components/board/#digital_interrupts) for this pin in the [board's configuration](https://docs.viam.com/components/board/), use that digital interrupt's `name` instead. |
+| `board`  | string | **Required** | The `name` of the [board](https://docs.viam.com/components/board/) the ultrasonic is wired to. You must have a [board](https://docs.viam.com/components/board/) component configured to make use of the board's pins. |
 | `timeout_ms`  | int | Optional | Time to wait in milliseconds before timing out of requesting to get ultrasonic distance readings. <br> Default: `1000`. |
 
 
 ## Configure your ultrasonic camera
+
 Similarly for the ultrasonic camera:
+
 ```json
 {
   "trigger_pin": "<pin-number>",
@@ -45,7 +51,7 @@ The following attributes are available for the `ultrasonic` cameras:
 
 | Attribute | Type | Required? | Description |
 | --------- | ---- | --------- | ----------- |
-| `trigger_pin` | string | **Required** | The pin number of the [board's](https://docs.viam.com/components/board/) GPIO pin that you have wired [the ultrasonic's trigger pin](https://www.sparkfun.com/products/15569) to. |
-| `echo_interrupt_pin` | string | **Required** | The pin number of the pin [the ultrasonic's echo pin](https://www.sparkfun.com/products/15569) is wired to on the board. If you have already created a [digital interrupt](https://docs.viam.com/components/board/#digital_interrupts) for this pin in the [board's configuration](https://docs.viam.com/components/board/), use that digital interrupt's `name` instead. |
-| `board`  | string | **Required** | The `name` of the [board](https://docs.viam.com/components/board/) the ultrasonic is wired to. |
+| `trigger_pin` | string | **Required** | The physical pin number of the [board's](https://docs.viam.com/components/board/) GPIO pin that you have wired [the ultrasonic's trigger pin](https://www.sparkfun.com/products/15569) to. |
+| `echo_interrupt_pin` | string | **Required** | The physical pin number of the pin [the ultrasonic's echo pin](https://www.sparkfun.com/products/15569) is wired to on the board. If you have already created a [digital interrupt](https://docs.viam.com/components/board/#digital_interrupts) for this pin in the [board's configuration](https://docs.viam.com/components/board/), use that digital interrupt's `name` instead. |
+| `board`  | string | **Required** | The `name` of the [board](https://docs.viam.com/components/board/) the ultrasonic is wired to. You must have a [board](https://docs.viam.com/components/board/) component configured to make use of the board's pins. |
 | `timeout_ms`  | int | Optional | Time to wait in milliseconds before timing out of requesting to get ultrasonic distance readings. <br> Default: `1000`. |
