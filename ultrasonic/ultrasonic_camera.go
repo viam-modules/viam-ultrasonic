@@ -47,7 +47,7 @@ func newCamera(
 		return nil, err
 	}
 
-	return camera.FromVideoSource(conf.ResourceName(), usVideoSource, logger), nil
+	return camera.FromVideoSource(conf.ResourceName(), usVideoSource), nil
 }
 
 // NextPointCloud queries the ultrasonic sensor then returns the result as a pointcloud,
@@ -57,7 +57,7 @@ func (cam *ultrasonicWrapper) NextPointCloud(ctx context.Context) (pointcloud.Po
 	if err != nil {
 		return nil, err
 	}
-	pcToReturn := pointcloud.New()
+	pcToReturn := pointcloud.NewBasicEmpty()
 	distFloat, ok := readings["distance"].(float64)
 	if !ok {
 		return nil, errors.New("unable to convert distance to float64")

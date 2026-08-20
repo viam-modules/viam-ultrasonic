@@ -28,19 +28,19 @@ type Config struct {
 }
 
 // Validate ensures all parts of the config are valid.
-func (conf *Config) Validate(path string) ([]string, error) {
+func (conf *Config) Validate(path string) ([]string, []string, error) {
 	var deps []string
 	if len(conf.Board) == 0 {
-		return nil, resource.NewConfigValidationFieldRequiredError(path, "board")
+		return nil, nil, resource.NewConfigValidationFieldRequiredError(path, "board")
 	}
 	deps = append(deps, conf.Board)
 	if len(conf.TriggerPin) == 0 {
-		return nil, resource.NewConfigValidationFieldRequiredError(path, "trigger pin")
+		return nil, nil, resource.NewConfigValidationFieldRequiredError(path, "trigger pin")
 	}
 	if len(conf.EchoInterrupt) == 0 {
-		return nil, resource.NewConfigValidationFieldRequiredError(path, "echo interrupt pin")
+		return nil, nil, resource.NewConfigValidationFieldRequiredError(path, "echo interrupt pin")
 	}
-	return deps, nil
+	return deps, nil, nil
 }
 
 func init() {
